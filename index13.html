@@ -431,7 +431,10 @@
         div.innerHTML = `
           <h4>Order #${history.length - i}</h4>
           <ul>
-            ${order.items.map(item => `<li>${item.name} - ${item.qty}</li>`).join('')}
+             ${order.items.map(item => {
+               let unit = item.type === 'phool' ? 'pc' : (item.qty >= 1000 ? (item.qty / 1000) + 'kg' : item.qty + 'g');
+               return `<li>${item.name} - ${unit}</li>`;
+             }).join('')}
           </ul>
           <p><strong>Total:</strong> ₹${order.total}</p>
           <p><strong>Time Slot:</strong> ${order.timeSlot}</p>
@@ -506,7 +509,11 @@
       }
 
       const order = {
-        items: cart.map(c => ({ name: items[c.index].name, qty: c.qty })),
+        items: cart.map(c => ({ 
+          name: items[c.index].name, 
+          qty: c.qty,
+          type: items[c.index].type 
+        })),
         total: document.getElementById('cartTotal').innerText,
         address, state, district, pin, timeSlot, payment,
         date: new Date().toLocaleString(),
